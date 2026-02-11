@@ -169,26 +169,26 @@ EOT
     platform_fault_domain_count   = number
     resource_group_name           = string
     user_data_base64              = optional(string)
-    upgrade_mode                  = optional(string, "Manual")
+    upgrade_mode                  = optional(string) # Default: "Manual"
     tags                          = optional(map(string))
     source_image_id               = optional(string)
     sku_name                      = optional(string)
     single_placement_group        = optional(bool)
     proximity_placement_group_id  = optional(string)
-    priority                      = optional(string, "Regular")
-    max_bid_price                 = optional(number, -1)
-    zone_balance                  = optional(bool, false)
+    priority                      = optional(string) # Default: "Regular"
+    max_bid_price                 = optional(number) # Default: -1
+    zone_balance                  = optional(bool)   # Default: false
     license_type                  = optional(string)
     instances                     = optional(number)
-    extensions_time_budget        = optional(string, "PT1H30M")
-    extension_operations_enabled  = optional(bool, true)
+    extensions_time_budget        = optional(string) # Default: "PT1H30M"
+    extension_operations_enabled  = optional(bool)   # Default: true
     eviction_policy               = optional(string)
     encryption_at_host_enabled    = optional(bool)
     capacity_reservation_group_id = optional(string)
-    network_api_version           = optional(string, "2020-11-01")
+    network_api_version           = optional(string) # Default: "2020-11-01"
     zones                         = optional(set(string))
     additional_capabilities = optional(object({
-      ultra_ssd_enabled = optional(bool, false)
+      ultra_ssd_enabled = optional(bool) # Default: false
     }))
     automatic_instance_repair = optional(object({
       action       = optional(string)
@@ -200,19 +200,19 @@ EOT
     }))
     data_disk = optional(object({
       caching                        = string
-      create_option                  = optional(string, "Empty")
+      create_option                  = optional(string) # Default: "Empty"
       disk_encryption_set_id         = optional(string)
       disk_size_gb                   = optional(number)
       lun                            = optional(number)
       storage_account_type           = string
       ultra_ssd_disk_iops_read_write = optional(number)
       ultra_ssd_disk_mbps_read_write = optional(number)
-      write_accelerator_enabled      = optional(bool, false)
+      write_accelerator_enabled      = optional(bool) # Default: false
     }))
     extension = optional(object({
-      auto_upgrade_minor_version_enabled        = optional(bool, true)
+      auto_upgrade_minor_version_enabled        = optional(bool) # Default: true
       extensions_to_provision_after_vm_creation = optional(list(string))
-      failure_suppression_enabled               = optional(bool, false)
+      failure_suppression_enabled               = optional(bool) # Default: false
       force_extension_execution_on_change       = optional(string)
       name                                      = string
       protected_settings                        = optional(string)
@@ -233,14 +233,14 @@ EOT
       auxiliary_mode                = optional(string)
       auxiliary_sku                 = optional(string)
       dns_servers                   = optional(list(string))
-      enable_accelerated_networking = optional(bool, false)
-      enable_ip_forwarding          = optional(bool, false)
+      enable_accelerated_networking = optional(bool) # Default: false
+      enable_ip_forwarding          = optional(bool) # Default: false
       ip_configuration = object({
         application_gateway_backend_address_pool_ids = optional(set(string))
         application_security_group_ids               = optional(set(string))
         load_balancer_backend_address_pool_ids       = optional(set(string))
         name                                         = string
-        primary                                      = optional(bool, false)
+        primary                                      = optional(bool) # Default: false
         public_ip_address = optional(object({
           domain_name_label       = optional(string)
           idle_timeout_in_minutes = optional(number)
@@ -251,25 +251,25 @@ EOT
           name                = string
           public_ip_prefix_id = optional(string)
           sku_name            = optional(string)
-          version             = optional(string, "IPv4")
+          version             = optional(string) # Default: "IPv4"
         }))
         subnet_id = optional(string)
-        version   = optional(string, "IPv4")
+        version   = optional(string) # Default: "IPv4"
       })
       name                      = string
       network_security_group_id = optional(string)
-      primary                   = optional(bool, false)
+      primary                   = optional(bool) # Default: false
     }))
     os_disk = optional(object({
       caching = string
       diff_disk_settings = optional(object({
         option    = string
-        placement = optional(string, "CacheDisk")
+        placement = optional(string) # Default: "CacheDisk"
       }))
       disk_encryption_set_id    = optional(string)
       disk_size_gb              = optional(number)
       storage_account_type      = string
-      write_accelerator_enabled = optional(bool, false)
+      write_accelerator_enabled = optional(bool) # Default: false
     }))
     os_profile = optional(object({
       custom_data = optional(string)
@@ -281,14 +281,14 @@ EOT
         }))
         admin_username                  = string
         computer_name_prefix            = optional(string)
-        disable_password_authentication = optional(bool, true)
-        patch_assessment_mode           = optional(string, "ImageDefault")
-        patch_mode                      = optional(string, "ImageDefault")
-        provision_vm_agent              = optional(bool, true)
+        disable_password_authentication = optional(bool)   # Default: true
+        patch_assessment_mode           = optional(string) # Default: "ImageDefault"
+        patch_mode                      = optional(string) # Default: "ImageDefault"
+        provision_vm_agent              = optional(bool)   # Default: true
         secret = optional(object({
-          certificate = object({
+          certificate = list(object({
             url = string
-          })
+          }))
           key_vault_id = string
         }))
       }))
@@ -300,16 +300,16 @@ EOT
         admin_password           = string
         admin_username           = string
         computer_name_prefix     = optional(string)
-        enable_automatic_updates = optional(bool, true)
-        hotpatching_enabled      = optional(bool, false)
-        patch_assessment_mode    = optional(string, "ImageDefault")
-        patch_mode               = optional(string, "AutomaticByOS")
-        provision_vm_agent       = optional(bool, true)
+        enable_automatic_updates = optional(bool)   # Default: true
+        hotpatching_enabled      = optional(bool)   # Default: false
+        patch_assessment_mode    = optional(string) # Default: "ImageDefault"
+        patch_mode               = optional(string) # Default: "AutomaticByOS"
+        provision_vm_agent       = optional(bool)   # Default: true
         secret = optional(object({
-          certificate = object({
+          certificate = list(object({
             store = string
             url   = string
-          })
+          }))
           key_vault_id = string
         }))
         timezone = optional(string)
@@ -325,8 +325,8 @@ EOT
       publisher = string
     }))
     priority_mix = optional(object({
-      base_regular_count            = optional(number, 0)
-      regular_percentage_above_base = optional(number, 0)
+      base_regular_count            = optional(number) # Default: 0
+      regular_percentage_above_base = optional(number) # Default: 0
     }))
     rolling_upgrade_policy = optional(object({
       cross_zone_upgrades_enabled             = optional(bool)
@@ -349,8 +349,24 @@ EOT
     }))
     termination_notification = optional(object({
       enabled = bool
-      timeout = optional(string, "PT5M")
+      timeout = optional(string) # Default: "PT5M"
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        length(v.os_profile.linux_configuration.secret.certificate) >= 1
+      )
+    ])
+    error_message = "Each certificate list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        length(v.os_profile.windows_configuration.secret.certificate) >= 1
+      )
+    ])
+    error_message = "Each certificate list must contain at least 1 items"
+  }
 }
 

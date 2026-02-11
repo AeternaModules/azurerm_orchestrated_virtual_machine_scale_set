@@ -177,8 +177,11 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           dynamic "secret" {
             for_each = linux_configuration.value.secret != null ? [linux_configuration.value.secret] : []
             content {
-              certificate {
-                url = secret.value.certificate.url
+              dynamic "certificate" {
+                for_each = secret.value.certificate
+                content {
+                  url = certificate.value.url
+                }
               }
               key_vault_id = secret.value.key_vault_id
             }
@@ -206,9 +209,12 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           dynamic "secret" {
             for_each = windows_configuration.value.secret != null ? [windows_configuration.value.secret] : []
             content {
-              certificate {
-                store = secret.value.certificate.store
-                url   = secret.value.certificate.url
+              dynamic "certificate" {
+                for_each = secret.value.certificate
+                content {
+                  store = certificate.value.store
+                  url   = certificate.value.url
+                }
               }
               key_vault_id = secret.value.key_vault_id
             }
