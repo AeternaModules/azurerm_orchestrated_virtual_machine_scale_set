@@ -152,7 +152,10 @@ Optional:
         - prioritize_unhealthy_instances_enabled (optional)
     - sku_profile (block):
         - allocation_strategy (required)
-        - vm_sizes (required)
+        - virtual_machine_size (optional, block):
+            - name (required)
+            - rank (optional)
+        - vm_sizes (optional)
     - source_image_reference (block):
         - offer (required)
         - publisher (required)
@@ -339,7 +342,11 @@ EOT
     }))
     sku_profile = optional(object({
       allocation_strategy = string
-      vm_sizes            = set(string)
+      virtual_machine_size = optional(list(object({
+        name = string
+        rank = optional(number)
+      })))
+      vm_sizes = optional(set(string))
     }))
     source_image_reference = optional(object({
       offer     = string
@@ -368,5 +375,138 @@ EOT
     ])
     error_message = "Each certificate list must contain at least 1 items"
   }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) >= 1 && length(v.sku_profile.virtual_machine_size) <= 5)
+      )
+    ])
+    error_message = "Each virtual_machine_size list must contain between 1 and 5 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.instances == null || (v.instances >= 0 && v.instances <= 1000)
+      )
+    ])
+    error_message = "must be between 0 and 1000"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.license_type == null || (contains(["None", "Windows_Client", "Windows_Server"], v.license_type))
+      )
+    ])
+    error_message = "must be one of: None, Windows_Client, Windows_Server"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.zones == null || (length(v.zones) > 0)
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_orchestrated_virtual_machine_scale_set's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] !ok
+  # path: name
+  #   condition: length(value) > 0
+  #   message:   [from computeValidate.VirtualMachineName: invalid when value == ""]
+  #   source:    [from computeValidate.VirtualMachineName: invalid when value == ""]
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] len(v) > maxLength
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] !matched
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] !matched
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] !matched
+  # path: name
+  #   source:    [from computeValidate.VirtualMachineName] matched
+  # path: resource_group_name
+  #   condition: length(value) <= 90
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) > 90]
+  # path: resource_group_name
+  #   condition: !endswith(value, ".")
+  #   message:   [from resourcegroups.ValidateName: must not end with "."]
+  #   source:    [from resourcegroups.ValidateName: must not end with "."]
+  # path: resource_group_name
+  #   condition: length(value) != 0
+  #   message:   [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  #   source:    [from resourcegroups.ValidateName: invalid when len(value) == 0]
+  # path: resource_group_name
+  #   source:    [from resourcegroups.ValidateName] !matched
+  # path: location
+  #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: network_api_version
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: sku_name
+  #   source:    [from computeValidate.OrchestratedVirtualMachineScaleSetSku] !ok
+  # path: sku_name
+  #   source:    [from computeValidate.OrchestratedVirtualMachineScaleSetSku] (input != SkuNameMix && len(skuParts) < 2) || strings.Contains(v, "__") || strings.Contains(v, " ")
+  # path: sku_profile.allocation_strategy
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: sku_profile.virtual_machine_size.name
+  #   source:    [from computeValidate.SkuProfileVMSizeName] !ok
+  # path: sku_profile.virtual_machine_size.name
+  #   condition: length(value) > 0
+  #   message:   [from computeValidate.SkuProfileVMSizeName: invalid when value == ""]
+  #   source:    [from computeValidate.SkuProfileVMSizeName: invalid when value == ""]
+  # path: sku_profile.virtual_machine_size.name
+  #   source:    [from computeValidate.SkuProfileVMSizeName] !strings.HasPrefix(v, "Standard_")
+  # path: sku_profile.virtual_machine_size.name
+  #   source:    [from computeValidate.SkuProfileVMSizeName] strings.HasPrefix(family, "DC") || strings.HasPrefix(family, "EC")
+  # path: sku_profile.virtual_machine_size.rank
+  #   condition: value >= 1 && value <= 3
+  #   message:   must be between 1 and 3
+  # path: capacity_reservation_group_id
+  #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] !ok
+  # path: capacity_reservation_group_id
+  #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] err != nil
+  # path: eviction_policy
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: extensions_time_budget
+  #   source:    validate.ISO8601DurationBetween: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: identity.type
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: identity.identity_ids[*]
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] !ok
+  # path: identity.identity_ids[*]
+  #   source:    [from commonids.ValidateUserAssignedIdentityID] err != nil
+  # path: max_bid_price
+  #   source:    [from computeValidate.SpotMaxPrice] !ok
+  # path: max_bid_price
+  #   source:    [from computeValidate.SpotMaxPrice] v < 0.00001
+  # path: priority
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: proximity_placement_group_id
+  #   source:    [from proximityplacementgroups.ValidateProximityPlacementGroupID] !ok
+  # path: proximity_placement_group_id
+  #   source:    [from proximityplacementgroups.ValidateProximityPlacementGroupID] err != nil
+  # path: source_image_id
+  #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: tags
+  #   condition: length(value) <= 50
+  #   message:   [from tags.Validate: invalid when len(value) > 50]
+  #   source:    [from tags.Validate: invalid when len(value) > 50]
+  # path: tags
+  #   condition: length(value) <= 512
+  #   message:   [from tags.Validate: invalid when len(value) > 512]
+  #   source:    [from tags.Validate: invalid when len(value) > 512]
+  # path: tags
+  #   source:    [from tags.Validate] err != nil
+  # path: tags
+  #   condition: length(value) <= 256
+  #   message:   [from tags.Validate: invalid when len(value) > 256]
+  #   source:    [from tags.Validate: invalid when len(value) > 256]
+  # path: upgrade_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: user_data_base64
+  #   source:    validation.StringIsBase64(...) - no translation rule yet, add one
 }
 

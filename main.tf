@@ -266,7 +266,14 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
     for_each = each.value.sku_profile != null ? [each.value.sku_profile] : []
     content {
       allocation_strategy = sku_profile.value.allocation_strategy
-      vm_sizes            = sku_profile.value.vm_sizes
+      dynamic "virtual_machine_size" {
+        for_each = sku_profile.value.virtual_machine_size != null ? sku_profile.value.virtual_machine_size : []
+        content {
+          name = virtual_machine_size.value.name
+          rank = virtual_machine_size.value.rank
+        }
+      }
+      vm_sizes = sku_profile.value.vm_sizes
     }
   }
 
