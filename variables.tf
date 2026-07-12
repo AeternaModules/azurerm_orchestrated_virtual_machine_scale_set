@@ -362,7 +362,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.os_profile.linux_configuration.secret == null || alltrue([for item in v.os_profile.linux_configuration.secret : (length(item.certificate) >= 1)])
+        v.os_profile == null || (v.os_profile.linux_configuration == null || (v.os_profile.linux_configuration.secret == null || alltrue([for item in v.os_profile.linux_configuration.secret : (length(item.certificate) >= 1)])))
       )
     ])
     error_message = "Each certificate list must contain at least 1 items"
@@ -370,7 +370,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.os_profile.windows_configuration.secret == null || alltrue([for item in v.os_profile.windows_configuration.secret : (length(item.certificate) >= 1)])
+        v.os_profile == null || (v.os_profile.windows_configuration == null || (v.os_profile.windows_configuration.secret == null || alltrue([for item in v.os_profile.windows_configuration.secret : (length(item.certificate) >= 1)])))
       )
     ])
     error_message = "Each certificate list must contain at least 1 items"
@@ -378,7 +378,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) >= 1 && length(v.sku_profile.virtual_machine_size) <= 5)
+        v.sku_profile == null || (v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) >= 1 && length(v.sku_profile.virtual_machine_size) <= 5))
       )
     ])
     error_message = "Each virtual_machine_size list must contain between 1 and 5 items"
