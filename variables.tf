@@ -201,7 +201,7 @@ EOT
     boot_diagnostics = optional(object({
       storage_account_uri = optional(string)
     }))
-    data_disk = optional(object({
+    data_disk = optional(list(object({
       caching                        = string
       create_option                  = optional(string) # Default: "Empty"
       disk_encryption_set_id         = optional(string)
@@ -211,8 +211,8 @@ EOT
       ultra_ssd_disk_iops_read_write = optional(number)
       ultra_ssd_disk_mbps_read_write = optional(number)
       write_accelerator_enabled      = optional(bool) # Default: false
-    }))
-    extension = optional(object({
+    })))
+    extension = optional(list(object({
       auto_upgrade_minor_version_enabled        = optional(bool) # Default: true
       extensions_to_provision_after_vm_creation = optional(list(string))
       failure_suppression_enabled               = optional(bool) # Default: false
@@ -227,42 +227,42 @@ EOT
       settings             = optional(string)
       type                 = string
       type_handler_version = string
-    }))
+    })))
     identity = optional(object({
       identity_ids = set(string)
       type         = string
     }))
-    network_interface = optional(object({
+    network_interface = optional(list(object({
       auxiliary_mode                = optional(string)
       auxiliary_sku                 = optional(string)
       dns_servers                   = optional(list(string))
       enable_accelerated_networking = optional(bool) # Default: false
       enable_ip_forwarding          = optional(bool) # Default: false
-      ip_configuration = object({
+      ip_configuration = list(object({
         application_gateway_backend_address_pool_ids = optional(set(string))
         application_security_group_ids               = optional(set(string))
         load_balancer_backend_address_pool_ids       = optional(set(string))
         name                                         = string
         primary                                      = optional(bool) # Default: false
-        public_ip_address = optional(object({
+        public_ip_address = optional(list(object({
           domain_name_label       = optional(string)
           idle_timeout_in_minutes = optional(number)
-          ip_tag = optional(object({
+          ip_tag = optional(list(object({
             tag  = string
             type = string
-          }))
+          })))
           name                = string
           public_ip_prefix_id = optional(string)
           sku_name            = optional(string)
           version             = optional(string) # Default: "IPv4"
-        }))
+        })))
         subnet_id = optional(string)
         version   = optional(string) # Default: "IPv4"
-      })
+      }))
       name                      = string
       network_security_group_id = optional(string)
       primary                   = optional(bool) # Default: false
-    }))
+    })))
     os_disk = optional(object({
       caching = string
       diff_disk_settings = optional(object({
@@ -278,28 +278,28 @@ EOT
       custom_data = optional(string)
       linux_configuration = optional(object({
         admin_password = optional(string)
-        admin_ssh_key = optional(object({
+        admin_ssh_key = optional(list(object({
           public_key = string
           username   = string
-        }))
+        })))
         admin_username                  = string
         computer_name_prefix            = optional(string)
         disable_password_authentication = optional(bool)   # Default: true
         patch_assessment_mode           = optional(string) # Default: "ImageDefault"
         patch_mode                      = optional(string) # Default: "ImageDefault"
         provision_vm_agent              = optional(bool)   # Default: true
-        secret = optional(object({
+        secret = optional(list(object({
           certificate = list(object({
             url = string
           }))
           key_vault_id = string
-        }))
+        })))
       }))
       windows_configuration = optional(object({
-        additional_unattend_content = optional(object({
+        additional_unattend_content = optional(list(object({
           content = string
           setting = string
-        }))
+        })))
         admin_password           = string
         admin_username           = string
         computer_name_prefix     = optional(string)
@@ -308,18 +308,18 @@ EOT
         patch_assessment_mode    = optional(string) # Default: "ImageDefault"
         patch_mode               = optional(string) # Default: "AutomaticByOS"
         provision_vm_agent       = optional(bool)   # Default: true
-        secret = optional(object({
+        secret = optional(list(object({
           certificate = list(object({
             store = string
             url   = string
           }))
           key_vault_id = string
-        }))
+        })))
         timezone = optional(string)
-        winrm_listener = optional(object({
+        winrm_listener = optional(list(object({
           certificate_url = optional(string)
           protocol        = string
-        }))
+        })))
       }))
     }))
     plan = optional(object({
@@ -362,7 +362,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        length(v.os_profile.linux_configuration.secret.certificate) >= 1
+        v.os_profile.linux_configuration.secret == null || alltrue([for item in v.os_profile.linux_configuration.secret : (length(item.certificate) >= 1)])
       )
     ])
     error_message = "Each certificate list must contain at least 1 items"
@@ -370,7 +370,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        length(v.os_profile.windows_configuration.secret.certificate) >= 1
+        v.os_profile.windows_configuration.secret == null || alltrue([for item in v.os_profile.windows_configuration.secret : (length(item.certificate) >= 1)])
       )
     ])
     error_message = "Each certificate list must contain at least 1 items"
@@ -382,30 +382,6 @@ EOT
       )
     ])
     error_message = "Each virtual_machine_size list must contain between 1 and 5 items"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.instances == null || (v.instances >= 0 && v.instances <= 1000)
-      )
-    ])
-    error_message = "must be between 0 and 1000"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.license_type == null || (contains(["None", "Windows_Client", "Windows_Server"], v.license_type))
-      )
-    ])
-    error_message = "must be one of: None, Windows_Client, Windows_Server"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.zones == null || (length(v.zones) > 0)
-      )
-    ])
-    error_message = "must not be empty"
   }
   # --- Unconfirmed validation candidates, derived from azurerm_orchestrated_virtual_machine_scale_set's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
@@ -445,6 +421,9 @@ EOT
   #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: network_api_version
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: instances
+  #   condition: value >= 0 && value <= 1000
+  #   message:   must be between 0 and 1000
   # path: sku_name
   #   source:    [from computeValidate.OrchestratedVirtualMachineScaleSetSku] !ok
   # path: sku_name
@@ -478,6 +457,9 @@ EOT
   #   source:    [from commonids.ValidateUserAssignedIdentityID] !ok
   # path: identity.identity_ids[*]
   #   source:    [from commonids.ValidateUserAssignedIdentityID] err != nil
+  # path: license_type
+  #   condition: contains(["None", "Windows_Client", "Windows_Server"], value)
+  #   message:   must be one of: None, Windows_Client, Windows_Server
   # path: max_bid_price
   #   source:    [from computeValidate.SpotMaxPrice] !ok
   # path: max_bid_price
@@ -490,6 +472,9 @@ EOT
   #   source:    [from proximityplacementgroups.ValidateProximityPlacementGroupID] err != nil
   # path: source_image_id
   #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: zones[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]

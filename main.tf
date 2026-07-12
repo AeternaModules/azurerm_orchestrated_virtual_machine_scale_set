@@ -49,7 +49,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   }
 
   dynamic "data_disk" {
-    for_each = each.value.data_disk != null ? [each.value.data_disk] : []
+    for_each = each.value.data_disk != null ? each.value.data_disk : []
     content {
       caching                        = data_disk.value.caching
       create_option                  = data_disk.value.create_option
@@ -64,7 +64,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   }
 
   dynamic "extension" {
-    for_each = each.value.extension != null ? [each.value.extension] : []
+    for_each = each.value.extension != null ? each.value.extension : []
     content {
       auto_upgrade_minor_version_enabled        = extension.value.auto_upgrade_minor_version_enabled
       extensions_to_provision_after_vm_creation = extension.value.extensions_to_provision_after_vm_creation
@@ -95,39 +95,42 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   }
 
   dynamic "network_interface" {
-    for_each = each.value.network_interface != null ? [each.value.network_interface] : []
+    for_each = each.value.network_interface != null ? each.value.network_interface : []
     content {
       auxiliary_mode                = network_interface.value.auxiliary_mode
       auxiliary_sku                 = network_interface.value.auxiliary_sku
       dns_servers                   = network_interface.value.dns_servers
       enable_accelerated_networking = network_interface.value.enable_accelerated_networking
       enable_ip_forwarding          = network_interface.value.enable_ip_forwarding
-      ip_configuration {
-        application_gateway_backend_address_pool_ids = network_interface.value.ip_configuration.application_gateway_backend_address_pool_ids
-        application_security_group_ids               = network_interface.value.ip_configuration.application_security_group_ids
-        load_balancer_backend_address_pool_ids       = network_interface.value.ip_configuration.load_balancer_backend_address_pool_ids
-        name                                         = network_interface.value.ip_configuration.name
-        primary                                      = network_interface.value.ip_configuration.primary
-        dynamic "public_ip_address" {
-          for_each = network_interface.value.ip_configuration.public_ip_address != null ? [network_interface.value.ip_configuration.public_ip_address] : []
-          content {
-            domain_name_label       = public_ip_address.value.domain_name_label
-            idle_timeout_in_minutes = public_ip_address.value.idle_timeout_in_minutes
-            dynamic "ip_tag" {
-              for_each = public_ip_address.value.ip_tag != null ? [public_ip_address.value.ip_tag] : []
-              content {
-                tag  = ip_tag.value.tag
-                type = ip_tag.value.type
+      dynamic "ip_configuration" {
+        for_each = network_interface.value.ip_configuration
+        content {
+          application_gateway_backend_address_pool_ids = ip_configuration.value.application_gateway_backend_address_pool_ids
+          application_security_group_ids               = ip_configuration.value.application_security_group_ids
+          load_balancer_backend_address_pool_ids       = ip_configuration.value.load_balancer_backend_address_pool_ids
+          name                                         = ip_configuration.value.name
+          primary                                      = ip_configuration.value.primary
+          dynamic "public_ip_address" {
+            for_each = ip_configuration.value.public_ip_address != null ? ip_configuration.value.public_ip_address : []
+            content {
+              domain_name_label       = public_ip_address.value.domain_name_label
+              idle_timeout_in_minutes = public_ip_address.value.idle_timeout_in_minutes
+              dynamic "ip_tag" {
+                for_each = public_ip_address.value.ip_tag != null ? public_ip_address.value.ip_tag : []
+                content {
+                  tag  = ip_tag.value.tag
+                  type = ip_tag.value.type
+                }
               }
+              name                = public_ip_address.value.name
+              public_ip_prefix_id = public_ip_address.value.public_ip_prefix_id
+              sku_name            = public_ip_address.value.sku_name
+              version             = public_ip_address.value.version
             }
-            name                = public_ip_address.value.name
-            public_ip_prefix_id = public_ip_address.value.public_ip_prefix_id
-            sku_name            = public_ip_address.value.sku_name
-            version             = public_ip_address.value.version
           }
+          subnet_id = ip_configuration.value.subnet_id
+          version   = ip_configuration.value.version
         }
-        subnet_id = network_interface.value.ip_configuration.subnet_id
-        version   = network_interface.value.ip_configuration.version
       }
       name                      = network_interface.value.name
       network_security_group_id = network_interface.value.network_security_group_id
@@ -162,7 +165,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
         content {
           admin_password = linux_configuration.value.admin_password
           dynamic "admin_ssh_key" {
-            for_each = linux_configuration.value.admin_ssh_key != null ? [linux_configuration.value.admin_ssh_key] : []
+            for_each = linux_configuration.value.admin_ssh_key != null ? linux_configuration.value.admin_ssh_key : []
             content {
               public_key = admin_ssh_key.value.public_key
               username   = admin_ssh_key.value.username
@@ -175,7 +178,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           patch_mode                      = linux_configuration.value.patch_mode
           provision_vm_agent              = linux_configuration.value.provision_vm_agent
           dynamic "secret" {
-            for_each = linux_configuration.value.secret != null ? [linux_configuration.value.secret] : []
+            for_each = linux_configuration.value.secret != null ? linux_configuration.value.secret : []
             content {
               dynamic "certificate" {
                 for_each = secret.value.certificate
@@ -192,7 +195,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
         for_each = os_profile.value.windows_configuration != null ? [os_profile.value.windows_configuration] : []
         content {
           dynamic "additional_unattend_content" {
-            for_each = windows_configuration.value.additional_unattend_content != null ? [windows_configuration.value.additional_unattend_content] : []
+            for_each = windows_configuration.value.additional_unattend_content != null ? windows_configuration.value.additional_unattend_content : []
             content {
               content = additional_unattend_content.value.content
               setting = additional_unattend_content.value.setting
@@ -207,7 +210,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           patch_mode               = windows_configuration.value.patch_mode
           provision_vm_agent       = windows_configuration.value.provision_vm_agent
           dynamic "secret" {
-            for_each = windows_configuration.value.secret != null ? [windows_configuration.value.secret] : []
+            for_each = windows_configuration.value.secret != null ? windows_configuration.value.secret : []
             content {
               dynamic "certificate" {
                 for_each = secret.value.certificate
@@ -221,7 +224,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           }
           timezone = windows_configuration.value.timezone
           dynamic "winrm_listener" {
-            for_each = windows_configuration.value.winrm_listener != null ? [windows_configuration.value.winrm_listener] : []
+            for_each = windows_configuration.value.winrm_listener != null ? windows_configuration.value.winrm_listener : []
             content {
               certificate_url = winrm_listener.value.certificate_url
               protocol        = winrm_listener.value.protocol
