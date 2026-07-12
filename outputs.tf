@@ -1,3 +1,7 @@
+output "orchestrated_virtual_machine_scale_sets_id" {
+  description = "Map of id values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.id }
+}
 output "orchestrated_virtual_machine_scale_sets_additional_capabilities" {
   description = "Map of additional_capabilities values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
   value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.additional_capabilities }
