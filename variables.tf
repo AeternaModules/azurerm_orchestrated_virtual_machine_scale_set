@@ -24,6 +24,8 @@ Optional:
     - tags
     - upgrade_mode
     - user_data_base64
+    - user_data_base64_key_vault_id (alternative to user_data_base64 - read from Key Vault instead)
+    - user_data_base64_key_vault_secret_name (alternative to user_data_base64 - read from Key Vault instead)
     - zone_balance
     - zones
     - additional_capabilities (block):
@@ -167,29 +169,31 @@ Optional:
 EOT
 
   type = map(object({
-    location                      = string
-    name                          = string
-    platform_fault_domain_count   = number
-    resource_group_name           = string
-    user_data_base64              = optional(string)
-    upgrade_mode                  = optional(string) # Default: "Manual"
-    tags                          = optional(map(string))
-    source_image_id               = optional(string)
-    sku_name                      = optional(string)
-    single_placement_group        = optional(bool)
-    proximity_placement_group_id  = optional(string)
-    priority                      = optional(string) # Default: "Regular"
-    max_bid_price                 = optional(number) # Default: -1
-    zone_balance                  = optional(bool)   # Default: false
-    license_type                  = optional(string)
-    instances                     = optional(number)
-    extensions_time_budget        = optional(string) # Default: "PT1H30M"
-    extension_operations_enabled  = optional(bool)   # Default: true
-    eviction_policy               = optional(string)
-    encryption_at_host_enabled    = optional(bool)
-    capacity_reservation_group_id = optional(string)
-    network_api_version           = optional(string) # Default: "2020-11-01"
-    zones                         = optional(set(string))
+    location                               = string
+    name                                   = string
+    platform_fault_domain_count            = number
+    resource_group_name                    = string
+    user_data_base64                       = optional(string)
+    user_data_base64_key_vault_id          = optional(string)
+    user_data_base64_key_vault_secret_name = optional(string)
+    upgrade_mode                           = optional(string) # Default: "Manual"
+    tags                                   = optional(map(string))
+    source_image_id                        = optional(string)
+    sku_name                               = optional(string)
+    single_placement_group                 = optional(bool)
+    proximity_placement_group_id           = optional(string)
+    priority                               = optional(string) # Default: "Regular"
+    max_bid_price                          = optional(number) # Default: -1
+    zone_balance                           = optional(bool)   # Default: false
+    license_type                           = optional(string)
+    instances                              = optional(number)
+    extensions_time_budget                 = optional(string) # Default: "PT1H30M"
+    extension_operations_enabled           = optional(bool)   # Default: true
+    eviction_policy                        = optional(string)
+    encryption_at_host_enabled             = optional(bool)
+    capacity_reservation_group_id          = optional(string)
+    network_api_version                    = optional(string) # Default: "2020-11-01"
+    zones                                  = optional(set(string))
     additional_capabilities = optional(object({
       ultra_ssd_enabled = optional(bool) # Default: false
     }))

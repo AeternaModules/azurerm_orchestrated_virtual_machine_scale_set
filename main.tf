@@ -1,3 +1,8 @@
+data "azurerm_key_vault_secret" "user_data_base64" {
+  for_each     = { for k, v in var.orchestrated_virtual_machine_scale_sets : k => v if v.user_data_base64_key_vault_id != null && v.user_data_base64_key_vault_secret_name != null }
+  name         = each.value.user_data_base64_key_vault_secret_name
+  key_vault_id = each.value.user_data_base64_key_vault_id
+}
 resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_machine_scale_sets" {
   for_each = var.orchestrated_virtual_machine_scale_sets
 
@@ -5,7 +10,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   name                          = each.value.name
   platform_fault_domain_count   = each.value.platform_fault_domain_count
   resource_group_name           = each.value.resource_group_name
-  user_data_base64              = each.value.user_data_base64
+  user_data_base64              = each.value.user_data_base64 != null ? each.value.user_data_base64 : try(data.azurerm_key_vault_secret.user_data_base64[each.key].value, null)
   upgrade_mode                  = each.value.upgrade_mode
   tags                          = each.value.tags
   source_image_id               = each.value.source_image_id
