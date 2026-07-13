@@ -176,26 +176,26 @@ EOT
     user_data_base64                       = optional(string)
     user_data_base64_key_vault_id          = optional(string)
     user_data_base64_key_vault_secret_name = optional(string)
-    upgrade_mode                           = optional(string) # Default: "Manual"
+    upgrade_mode                           = optional(string)
     tags                                   = optional(map(string))
     source_image_id                        = optional(string)
     sku_name                               = optional(string)
     single_placement_group                 = optional(bool)
     proximity_placement_group_id           = optional(string)
-    priority                               = optional(string) # Default: "Regular"
-    max_bid_price                          = optional(number) # Default: -1
-    zone_balance                           = optional(bool)   # Default: false
+    priority                               = optional(string)
+    max_bid_price                          = optional(number)
+    zone_balance                           = optional(bool)
     license_type                           = optional(string)
     instances                              = optional(number)
-    extensions_time_budget                 = optional(string) # Default: "PT1H30M"
-    extension_operations_enabled           = optional(bool)   # Default: true
+    extensions_time_budget                 = optional(string)
+    extension_operations_enabled           = optional(bool)
     eviction_policy                        = optional(string)
     encryption_at_host_enabled             = optional(bool)
     capacity_reservation_group_id          = optional(string)
-    network_api_version                    = optional(string) # Default: "2020-11-01"
+    network_api_version                    = optional(string)
     zones                                  = optional(set(string))
     additional_capabilities = optional(object({
-      ultra_ssd_enabled = optional(bool) # Default: false
+      ultra_ssd_enabled = optional(bool)
     }))
     automatic_instance_repair = optional(object({
       action       = optional(string)
@@ -207,19 +207,19 @@ EOT
     }))
     data_disk = optional(list(object({
       caching                        = string
-      create_option                  = optional(string) # Default: "Empty"
+      create_option                  = optional(string)
       disk_encryption_set_id         = optional(string)
       disk_size_gb                   = optional(number)
       lun                            = optional(number)
       storage_account_type           = string
       ultra_ssd_disk_iops_read_write = optional(number)
       ultra_ssd_disk_mbps_read_write = optional(number)
-      write_accelerator_enabled      = optional(bool) # Default: false
+      write_accelerator_enabled      = optional(bool)
     })))
     extension = optional(list(object({
-      auto_upgrade_minor_version_enabled        = optional(bool) # Default: true
+      auto_upgrade_minor_version_enabled        = optional(bool)
       extensions_to_provision_after_vm_creation = optional(list(string))
-      failure_suppression_enabled               = optional(bool) # Default: false
+      failure_suppression_enabled               = optional(bool)
       force_extension_execution_on_change       = optional(string)
       name                                      = string
       protected_settings                        = optional(string)
@@ -240,14 +240,14 @@ EOT
       auxiliary_mode                = optional(string)
       auxiliary_sku                 = optional(string)
       dns_servers                   = optional(list(string))
-      enable_accelerated_networking = optional(bool) # Default: false
-      enable_ip_forwarding          = optional(bool) # Default: false
+      enable_accelerated_networking = optional(bool)
+      enable_ip_forwarding          = optional(bool)
       ip_configuration = list(object({
         application_gateway_backend_address_pool_ids = optional(set(string))
         application_security_group_ids               = optional(set(string))
         load_balancer_backend_address_pool_ids       = optional(set(string))
         name                                         = string
-        primary                                      = optional(bool) # Default: false
+        primary                                      = optional(bool)
         public_ip_address = optional(list(object({
           domain_name_label       = optional(string)
           idle_timeout_in_minutes = optional(number)
@@ -258,25 +258,25 @@ EOT
           name                = string
           public_ip_prefix_id = optional(string)
           sku_name            = optional(string)
-          version             = optional(string) # Default: "IPv4"
+          version             = optional(string)
         })))
         subnet_id = optional(string)
-        version   = optional(string) # Default: "IPv4"
+        version   = optional(string)
       }))
       name                      = string
       network_security_group_id = optional(string)
-      primary                   = optional(bool) # Default: false
+      primary                   = optional(bool)
     })))
     os_disk = optional(object({
       caching = string
       diff_disk_settings = optional(object({
         option    = string
-        placement = optional(string) # Default: "CacheDisk"
+        placement = optional(string)
       }))
       disk_encryption_set_id    = optional(string)
       disk_size_gb              = optional(number)
       storage_account_type      = string
-      write_accelerator_enabled = optional(bool) # Default: false
+      write_accelerator_enabled = optional(bool)
     }))
     os_profile = optional(object({
       custom_data = optional(string)
@@ -288,10 +288,10 @@ EOT
         })))
         admin_username                  = string
         computer_name_prefix            = optional(string)
-        disable_password_authentication = optional(bool)   # Default: true
-        patch_assessment_mode           = optional(string) # Default: "ImageDefault"
-        patch_mode                      = optional(string) # Default: "ImageDefault"
-        provision_vm_agent              = optional(bool)   # Default: true
+        disable_password_authentication = optional(bool)
+        patch_assessment_mode           = optional(string)
+        patch_mode                      = optional(string)
+        provision_vm_agent              = optional(bool)
         secret = optional(list(object({
           certificate = list(object({
             url = string
@@ -307,11 +307,11 @@ EOT
         admin_password           = string
         admin_username           = string
         computer_name_prefix     = optional(string)
-        enable_automatic_updates = optional(bool)   # Default: true
-        hotpatching_enabled      = optional(bool)   # Default: false
-        patch_assessment_mode    = optional(string) # Default: "ImageDefault"
-        patch_mode               = optional(string) # Default: "AutomaticByOS"
-        provision_vm_agent       = optional(bool)   # Default: true
+        enable_automatic_updates = optional(bool)
+        hotpatching_enabled      = optional(bool)
+        patch_assessment_mode    = optional(string)
+        patch_mode               = optional(string)
+        provision_vm_agent       = optional(bool)
         secret = optional(list(object({
           certificate = list(object({
             store = string
@@ -332,8 +332,8 @@ EOT
       publisher = string
     }))
     priority_mix = optional(object({
-      base_regular_count            = optional(number) # Default: 0
-      regular_percentage_above_base = optional(number) # Default: 0
+      base_regular_count            = optional(number)
+      regular_percentage_above_base = optional(number)
     }))
     rolling_upgrade_policy = optional(object({
       cross_zone_upgrades_enabled             = optional(bool)
@@ -360,9 +360,17 @@ EOT
     }))
     termination_notification = optional(object({
       enabled = bool
-      timeout = optional(string) # Default: "PT5M"
+      timeout = optional(string)
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.network_interface == null || alltrue([for item in v.network_interface : (length(item.ip_configuration) >= 1)])
+      )
+    ])
+    error_message = "Each ip_configuration list must contain at least 1 items"
+  }
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
@@ -382,10 +390,10 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.sku_profile == null || (v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) >= 1 && length(v.sku_profile.virtual_machine_size) <= 5))
+        v.sku_profile == null || (v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) <= 5))
       )
     ])
-    error_message = "Each virtual_machine_size list must contain between 1 and 5 items"
+    error_message = "Each virtual_machine_size list must contain at most 5 items"
   }
   # --- Unconfirmed validation candidates, derived from azurerm_orchestrated_virtual_machine_scale_set's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
@@ -425,6 +433,72 @@ EOT
   #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: network_api_version
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: network_interface.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.ip_configuration.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.ip_configuration.application_security_group_ids[*]
+  #   source:    [from applicationsecuritygroups.ValidateApplicationSecurityGroupID] !ok
+  # path: network_interface.ip_configuration.application_security_group_ids[*]
+  #   source:    [from applicationsecuritygroups.ValidateApplicationSecurityGroupID] err != nil
+  # path: network_interface.ip_configuration.public_ip_address.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.ip_configuration.public_ip_address.domain_name_label
+  #   source:    [from validate.OrchestratedDomainNameLabel] !ok
+  # path: network_interface.ip_configuration.public_ip_address.domain_name_label
+  #   source:    [from validate.OrchestratedDomainNameLabel] !matched
+  # path: network_interface.ip_configuration.public_ip_address.idle_timeout_in_minutes
+  #   condition: value >= 4 && value <= 32
+  #   message:   must be between 4 and 32
+  # path: network_interface.ip_configuration.public_ip_address.ip_tag.tag
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.ip_configuration.public_ip_address.ip_tag.type
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.ip_configuration.public_ip_address.public_ip_prefix_id
+  #   source:    [from publicipprefixes.ValidatePublicIPPrefixID] !ok
+  # path: network_interface.ip_configuration.public_ip_address.public_ip_prefix_id
+  #   source:    [from publicipprefixes.ValidatePublicIPPrefixID] err != nil
+  # path: network_interface.ip_configuration.public_ip_address.sku_name
+  #   source:    [from validate.OrchestratedVirtualMachineScaleSetPublicIPSku] !ok
+  # path: network_interface.ip_configuration.public_ip_address.version
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: network_interface.ip_configuration.subnet_id
+  #   source:    [from commonids.ValidateSubnetID] !ok
+  # path: network_interface.ip_configuration.subnet_id
+  #   source:    [from commonids.ValidateSubnetID] err != nil
+  # path: network_interface.ip_configuration.version
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: network_interface.auxiliary_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: network_interface.auxiliary_sku
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: network_interface.dns_servers[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: network_interface.network_security_group_id
+  #   source:    [from networksecuritygroups.ValidateNetworkSecurityGroupID] !ok
+  # path: network_interface.network_security_group_id
+  #   source:    [from networksecuritygroups.ValidateNetworkSecurityGroupID] err != nil
+  # path: os_disk.caching
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_disk.storage_account_type
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_disk.diff_disk_settings.option
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_disk.diff_disk_settings.placement
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_disk.disk_encryption_set_id
+  #   source:    [from validate.DiskEncryptionSetID] !ok
+  # path: os_disk.disk_encryption_set_id
+  #   source:    [from validate.DiskEncryptionSetID] err != nil
+  # path: os_disk.disk_size_gb
+  #   condition: value >= 0 && value <= 4095
+  #   message:   must be between 0 and 4095
   # path: instances
   #   condition: value >= 0 && value <= 1000
   #   message:   must be between 0 and 1000
@@ -447,12 +521,100 @@ EOT
   # path: sku_profile.virtual_machine_size.rank
   #   condition: value >= 1 && value <= 3
   #   message:   must be between 1 and 3
+  # path: os_profile.custom_data
+  #   source:    validation.StringIsBase64(...) - no translation rule yet, add one
+  # path: os_profile.windows_configuration.admin_username
+  #   source:    [from validateAdminUsernameWindows] !ok
+  # path: os_profile.windows_configuration.admin_username
+  #   source:    [from validateAdminUsernameWindows] strings.EqualFold(v, str)
+  # path: os_profile.windows_configuration.admin_username
+  #   condition: !endswith(value, ".")
+  #   message:   [from validateAdminUsernameWindows: must not end with "."]
+  #   source:    [from validateAdminUsernameWindows: must not end with "."]
+  # path: os_profile.windows_configuration.admin_username
+  #   source:    [from validateAdminUsernameWindows] len(v) < 1 || len(v) > 20
+  # path: os_profile.windows_configuration.admin_password
+  #   source:    validatePasswordComplexityWindows: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.windows_configuration.computer_name_prefix
+  #   source:    validate.WindowsComputerNamePrefix: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.windows_configuration.additional_unattend_content.setting
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_profile.windows_configuration.patch_assessment_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_profile.windows_configuration.patch_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_profile.windows_configuration.timezone
+  #   source:    validate.VirtualMachineTimeZone: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.linux_configuration.admin_username
+  #   source:    [from validateAdminUsernameLinux] !ok
+  # path: os_profile.linux_configuration.admin_username
+  #   source:    [from validateAdminUsernameLinux] strings.EqualFold(v, str)
+  # path: os_profile.linux_configuration.admin_username
+  #   source:    [from validateAdminUsernameLinux] len(v) < 1 || len(v) > 64
+  # path: os_profile.linux_configuration.admin_password
+  #   source:    validatePasswordComplexityLinux: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.linux_configuration.admin_ssh_key.public_key
+  #   source:    validate.SSHKey: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.linux_configuration.admin_ssh_key.username
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: os_profile.linux_configuration.computer_name_prefix
+  #   source:    validate.LinuxComputerNamePrefix: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: os_profile.linux_configuration.patch_assessment_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: os_profile.linux_configuration.patch_mode
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: automatic_instance_repair.grace_period
+  #   source:    azValidate.ISO8601DurationBetween: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
+  # path: automatic_instance_repair.action
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: capacity_reservation_group_id
   #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] !ok
   # path: capacity_reservation_group_id
   #   source:    [from capacityreservationgroups.ValidateCapacityReservationGroupID] err != nil
+  # path: data_disk.caching
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: data_disk.create_option
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: data_disk.disk_encryption_set_id
+  #   source:    [from validate.DiskEncryptionSetID] !ok
+  # path: data_disk.disk_encryption_set_id
+  #   source:    [from validate.DiskEncryptionSetID] err != nil
+  # path: data_disk.disk_size_gb
+  #   condition: value >= 1 && value <= 32767
+  #   message:   must be between 1 and 32767
+  # path: data_disk.lun
+  #   condition: value >= 0 && value <= 2000
+  #   message:   must be between 0 and 2000
+  # path: data_disk.storage_account_type
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: data_disk.ultra_ssd_disk_iops_read_write
+  #   condition: value >= 1
+  #   message:   must be at least 1
+  # path: data_disk.ultra_ssd_disk_mbps_read_write
+  #   condition: value >= 1
+  #   message:   must be at least 1
   # path: eviction_policy
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: extension.name
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: extension.publisher
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: extension.type
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: extension.type_handler_version
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: extension.protected_settings
+  #   source:    validation.StringIsJSON(...) - no translation rule yet, add one
+  # path: extension.extensions_to_provision_after_vm_creation[*]
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: extension.settings
+  #   source:    validation.StringIsJSON(...) - no translation rule yet, add one
   # path: extensions_time_budget
   #   source:    validate.ISO8601DurationBetween: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: identity.type
@@ -474,8 +636,26 @@ EOT
   #   source:    [from proximityplacementgroups.ValidateProximityPlacementGroupID] !ok
   # path: proximity_placement_group_id
   #   source:    [from proximityplacementgroups.ValidateProximityPlacementGroupID] err != nil
+  # path: rolling_upgrade_policy.pause_time_between_batches
+  #   source:    [from azValidate.ISO8601Duration] !ok
+  # path: rolling_upgrade_policy.pause_time_between_batches
+  #   source:    [from azValidate.ISO8601Duration] err != nil
   # path: source_image_id
   #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: source_image_reference.publisher
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source_image_reference.offer
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source_image_reference.sku
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: source_image_reference.version
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: termination_notification.timeout
+  #   source:    azValidate.ISO8601DurationBetween: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
   # path: zones[*]
   #   condition: length(value) > 0
   #   message:   must not be empty
@@ -497,5 +677,11 @@ EOT
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: user_data_base64
   #   source:    validation.StringIsBase64(...) - no translation rule yet, add one
+  # path: priority_mix.base_regular_count
+  #   condition: value >= 0 && value <= 1000
+  #   message:   must be between 0 and 1000
+  # path: priority_mix.regular_percentage_above_base
+  #   condition: value >= 0 && value <= 100
+  #   message:   must be between 0 and 100
 }
 
