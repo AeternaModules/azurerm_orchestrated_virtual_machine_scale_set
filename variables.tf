@@ -90,6 +90,7 @@ Optional:
         - name (required)
         - network_security_group_id (optional)
         - primary (optional)
+        - tags (optional)
     - os_disk (block):
         - caching (required)
         - diff_disk_settings (optional, block):
@@ -266,6 +267,7 @@ EOT
       name                      = string
       network_security_group_id = optional(string)
       primary                   = optional(bool)
+      tags                      = optional(map(string))
     })))
     os_disk = optional(object({
       caching = string
@@ -478,6 +480,14 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
+        v.network_interface == null || alltrue([for item in v.network_interface : (item.tags == null || (length(item.tags) <= 50))])
+      )
+    ])
+    error_message = "[from tags.Validate: invalid when len(value) > 50]"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.orchestrated_virtual_machine_scale_sets : (
         v.os_disk == null || (v.os_disk.disk_size_gb == null || (v.os_disk.disk_size_gb >= 0 && v.os_disk.disk_size_gb <= 4095))
       )
     ])
@@ -683,6 +693,6 @@ EOT
     ])
     error_message = "must be between 0 and 100"
   }
-  # Note: 83 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
+  # Note: 86 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 

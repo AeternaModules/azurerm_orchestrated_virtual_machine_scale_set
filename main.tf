@@ -140,6 +140,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
       name                      = network_interface.value.name
       network_security_group_id = network_interface.value.network_security_group_id
       primary                   = network_interface.value.primary
+      tags                      = network_interface.value.tags
     }
   }
 
