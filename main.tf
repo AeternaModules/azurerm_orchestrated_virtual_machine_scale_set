@@ -56,15 +56,15 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   dynamic "data_disk" {
     for_each = each.value.data_disk != null ? each.value.data_disk : []
     content {
-      caching                        = data_disk.value.caching
-      create_option                  = data_disk.value.create_option
-      disk_encryption_set_id         = data_disk.value.disk_encryption_set_id
-      disk_size_gb                   = data_disk.value.disk_size_gb
-      lun                            = data_disk.value.lun
-      storage_account_type           = data_disk.value.storage_account_type
-      ultra_ssd_disk_iops_read_write = data_disk.value.ultra_ssd_disk_iops_read_write
-      ultra_ssd_disk_mbps_read_write = data_disk.value.ultra_ssd_disk_mbps_read_write
-      write_accelerator_enabled      = data_disk.value.write_accelerator_enabled
+      caching                   = data_disk.value.caching
+      create_option             = data_disk.value.create_option
+      disk_encryption_set_id    = data_disk.value.disk_encryption_set_id
+      disk_iops_read_write      = data_disk.value.disk_iops_read_write
+      disk_mbps_read_write      = data_disk.value.disk_mbps_read_write
+      disk_size_gb              = data_disk.value.disk_size_gb
+      lun                       = data_disk.value.lun
+      storage_account_type      = data_disk.value.storage_account_type
+      write_accelerator_enabled = data_disk.value.write_accelerator_enabled
     }
   }
 
@@ -102,11 +102,10 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
   dynamic "network_interface" {
     for_each = each.value.network_interface != null ? each.value.network_interface : []
     content {
-      auxiliary_mode                = network_interface.value.auxiliary_mode
-      auxiliary_sku                 = network_interface.value.auxiliary_sku
-      dns_servers                   = network_interface.value.dns_servers
-      enable_accelerated_networking = network_interface.value.enable_accelerated_networking
-      enable_ip_forwarding          = network_interface.value.enable_ip_forwarding
+      accelerated_networking_enabled = network_interface.value.accelerated_networking_enabled
+      auxiliary_mode                 = network_interface.value.auxiliary_mode
+      auxiliary_sku                  = network_interface.value.auxiliary_sku
+      dns_servers                    = network_interface.value.dns_servers
       dynamic "ip_configuration" {
         for_each = network_interface.value.ip_configuration
         content {
@@ -137,6 +136,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
           version   = ip_configuration.value.version
         }
       }
+      ip_forwarding_enabled     = network_interface.value.ip_forwarding_enabled
       name                      = network_interface.value.name
       network_security_group_id = network_interface.value.network_security_group_id
       primary                   = network_interface.value.primary
@@ -207,14 +207,14 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
               setting = additional_unattend_content.value.setting
             }
           }
-          admin_password           = windows_configuration.value.admin_password
-          admin_username           = windows_configuration.value.admin_username
-          computer_name_prefix     = windows_configuration.value.computer_name_prefix
-          enable_automatic_updates = windows_configuration.value.enable_automatic_updates
-          hotpatching_enabled      = windows_configuration.value.hotpatching_enabled
-          patch_assessment_mode    = windows_configuration.value.patch_assessment_mode
-          patch_mode               = windows_configuration.value.patch_mode
-          provision_vm_agent       = windows_configuration.value.provision_vm_agent
+          admin_password            = windows_configuration.value.admin_password
+          admin_username            = windows_configuration.value.admin_username
+          automatic_updates_enabled = windows_configuration.value.automatic_updates_enabled
+          computer_name_prefix      = windows_configuration.value.computer_name_prefix
+          hotpatching_enabled       = windows_configuration.value.hotpatching_enabled
+          patch_assessment_mode     = windows_configuration.value.patch_assessment_mode
+          patch_mode                = windows_configuration.value.patch_mode
+          provision_vm_agent        = windows_configuration.value.provision_vm_agent
           dynamic "secret" {
             for_each = windows_configuration.value.secret != null ? windows_configuration.value.secret : []
             content {
@@ -276,13 +276,12 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "orchestrated_virtual_
     content {
       allocation_strategy = sku_profile.value.allocation_strategy
       dynamic "virtual_machine_size" {
-        for_each = sku_profile.value.virtual_machine_size != null ? sku_profile.value.virtual_machine_size : []
+        for_each = sku_profile.value.virtual_machine_size
         content {
           name = virtual_machine_size.value.name
           rank = virtual_machine_size.value.rank
         }
       }
-      vm_sizes = sku_profile.value.vm_sizes
     }
   }
 

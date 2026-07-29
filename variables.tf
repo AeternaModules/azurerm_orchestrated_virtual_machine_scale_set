@@ -40,11 +40,11 @@ Optional:
         - caching (required)
         - create_option (optional)
         - disk_encryption_set_id (optional)
+        - disk_iops_read_write (optional)
+        - disk_mbps_read_write (optional)
         - disk_size_gb (optional)
         - lun (optional)
         - storage_account_type (required)
-        - ultra_ssd_disk_iops_read_write (optional)
-        - ultra_ssd_disk_mbps_read_write (optional)
         - write_accelerator_enabled (optional)
     - extension (block):
         - auto_upgrade_minor_version_enabled (optional)
@@ -64,11 +64,10 @@ Optional:
         - identity_ids (required)
         - type (required)
     - network_interface (block):
+        - accelerated_networking_enabled (optional)
         - auxiliary_mode (optional)
         - auxiliary_sku (optional)
         - dns_servers (optional)
-        - enable_accelerated_networking (optional)
-        - enable_ip_forwarding (optional)
         - ip_configuration (required, block):
             - application_gateway_backend_address_pool_ids (optional)
             - application_security_group_ids (optional)
@@ -87,6 +86,7 @@ Optional:
                 - version (optional)
             - subnet_id (optional)
             - version (optional)
+        - ip_forwarding_enabled (optional)
         - name (required)
         - network_security_group_id (optional)
         - primary (optional)
@@ -123,8 +123,8 @@ Optional:
                 - setting (required)
             - admin_password (required)
             - admin_username (required)
+            - automatic_updates_enabled (optional)
             - computer_name_prefix (optional)
-            - enable_automatic_updates (optional)
             - hotpatching_enabled (optional)
             - patch_assessment_mode (optional)
             - patch_mode (optional)
@@ -155,10 +155,9 @@ Optional:
         - prioritize_unhealthy_instances_enabled (optional)
     - sku_profile (block):
         - allocation_strategy (required)
-        - virtual_machine_size (optional, block):
+        - virtual_machine_size (required, block):
             - name (required)
             - rank (optional)
-        - vm_sizes (optional)
     - source_image_reference (block):
         - offer (required)
         - publisher (required)
@@ -207,15 +206,15 @@ EOT
       storage_account_uri = optional(string)
     }))
     data_disk = optional(list(object({
-      caching                        = string
-      create_option                  = optional(string)
-      disk_encryption_set_id         = optional(string)
-      disk_size_gb                   = optional(number)
-      lun                            = optional(number)
-      storage_account_type           = string
-      ultra_ssd_disk_iops_read_write = optional(number)
-      ultra_ssd_disk_mbps_read_write = optional(number)
-      write_accelerator_enabled      = optional(bool)
+      caching                   = string
+      create_option             = optional(string)
+      disk_encryption_set_id    = optional(string)
+      disk_iops_read_write      = optional(number)
+      disk_mbps_read_write      = optional(number)
+      disk_size_gb              = optional(number)
+      lun                       = optional(number)
+      storage_account_type      = string
+      write_accelerator_enabled = optional(bool)
     })))
     extension = optional(list(object({
       auto_upgrade_minor_version_enabled        = optional(bool)
@@ -238,11 +237,10 @@ EOT
       type         = string
     }))
     network_interface = optional(list(object({
-      auxiliary_mode                = optional(string)
-      auxiliary_sku                 = optional(string)
-      dns_servers                   = optional(list(string))
-      enable_accelerated_networking = optional(bool)
-      enable_ip_forwarding          = optional(bool)
+      accelerated_networking_enabled = optional(bool)
+      auxiliary_mode                 = optional(string)
+      auxiliary_sku                  = optional(string)
+      dns_servers                    = optional(list(string))
       ip_configuration = list(object({
         application_gateway_backend_address_pool_ids = optional(set(string))
         application_security_group_ids               = optional(set(string))
@@ -264,6 +262,7 @@ EOT
         subnet_id = optional(string)
         version   = optional(string)
       }))
+      ip_forwarding_enabled     = optional(bool)
       name                      = string
       network_security_group_id = optional(string)
       primary                   = optional(bool)
@@ -306,14 +305,14 @@ EOT
           content = string
           setting = string
         })))
-        admin_password           = string
-        admin_username           = string
-        computer_name_prefix     = optional(string)
-        enable_automatic_updates = optional(bool)
-        hotpatching_enabled      = optional(bool)
-        patch_assessment_mode    = optional(string)
-        patch_mode               = optional(string)
-        provision_vm_agent       = optional(bool)
+        admin_password            = string
+        admin_username            = string
+        automatic_updates_enabled = optional(bool)
+        computer_name_prefix      = optional(string)
+        hotpatching_enabled       = optional(bool)
+        patch_assessment_mode     = optional(string)
+        patch_mode                = optional(string)
+        provision_vm_agent        = optional(bool)
         secret = optional(list(object({
           certificate = list(object({
             store = string
@@ -348,11 +347,10 @@ EOT
     }))
     sku_profile = optional(object({
       allocation_strategy = string
-      virtual_machine_size = optional(list(object({
+      virtual_machine_size = list(object({
         name = string
         rank = optional(number)
-      })))
-      vm_sizes = optional(set(string))
+      }))
     }))
     source_image_reference = optional(object({
       offer     = string
@@ -392,10 +390,10 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.sku_profile == null || (v.sku_profile.virtual_machine_size == null || (length(v.sku_profile.virtual_machine_size) <= 5))
+        v.sku_profile == null || (length(v.sku_profile.virtual_machine_size) >= 1 && length(v.sku_profile.virtual_machine_size) <= 5)
       )
     ])
-    error_message = "Each virtual_machine_size list must contain at most 5 items"
+    error_message = "Each virtual_machine_size list must contain between 1 and 5 items"
   }
   validation {
     condition = alltrue([
@@ -504,7 +502,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.sku_profile == null || (v.sku_profile.virtual_machine_size == null || alltrue([for item in v.sku_profile.virtual_machine_size : (item.rank == null || (item.rank >= 1 && item.rank <= 3))]))
+        v.sku_profile == null || (alltrue([for item in v.sku_profile.virtual_machine_size : (item.rank == null || (item.rank >= 1 && item.rank <= 3))]))
       )
     ])
     error_message = "must be between 1 and 3"
@@ -544,7 +542,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.data_disk == null || alltrue([for item in v.data_disk : (item.ultra_ssd_disk_iops_read_write == null || (item.ultra_ssd_disk_iops_read_write >= 1))])
+        v.data_disk == null || alltrue([for item in v.data_disk : (item.disk_iops_read_write == null || (item.disk_iops_read_write >= 1))])
       )
     ])
     error_message = "must be at least 1"
@@ -552,7 +550,7 @@ EOT
   validation {
     condition = alltrue([
       for k, v in var.orchestrated_virtual_machine_scale_sets : (
-        v.data_disk == null || alltrue([for item in v.data_disk : (item.ultra_ssd_disk_mbps_read_write == null || (item.ultra_ssd_disk_mbps_read_write >= 1))])
+        v.data_disk == null || alltrue([for item in v.data_disk : (item.disk_mbps_read_write == null || (item.disk_mbps_read_write >= 1))])
       )
     ])
     error_message = "must be at least 1"
