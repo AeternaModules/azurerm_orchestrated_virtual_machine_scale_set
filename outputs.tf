@@ -4,15 +4,15 @@ output "orchestrated_virtual_machine_scale_sets_id" {
 }
 output "orchestrated_virtual_machine_scale_sets_additional_capabilities" {
   description = "Map of additional_capabilities values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.additional_capabilities if v.additional_capabilities != null && length(v.additional_capabilities) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.additional_capabilities) if v.additional_capabilities != null && length(v.additional_capabilities) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_automatic_instance_repair" {
   description = "Map of automatic_instance_repair values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.automatic_instance_repair if v.automatic_instance_repair != null && length(v.automatic_instance_repair) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.automatic_instance_repair) if v.automatic_instance_repair != null && length(v.automatic_instance_repair) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_boot_diagnostics" {
   description = "Map of boot_diagnostics values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.boot_diagnostics if v.boot_diagnostics != null && length(v.boot_diagnostics) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.boot_diagnostics) if v.boot_diagnostics != null && length(v.boot_diagnostics) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_capacity_reservation_group_id" {
   description = "Map of capacity_reservation_group_id values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -45,7 +45,7 @@ output "orchestrated_virtual_machine_scale_sets_extensions_time_budget" {
 }
 output "orchestrated_virtual_machine_scale_sets_identity" {
   description = "Map of identity values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.identity if v.identity != null && length(v.identity) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.identity) if v.identity != null && length(v.identity) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_instances" {
   description = "Map of instances values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -77,16 +77,16 @@ output "orchestrated_virtual_machine_scale_sets_network_interface" {
 }
 output "orchestrated_virtual_machine_scale_sets_os_disk" {
   description = "Map of os_disk values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.os_disk if v.os_disk != null && length(v.os_disk) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.os_disk) if v.os_disk != null && length(v.os_disk) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_os_profile" {
   description = "Map of os_profile values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.os_profile if v.os_profile != null && length(v.os_profile) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.os_profile) if v.os_profile != null && length(v.os_profile) > 0 }
   sensitive   = true
 }
 output "orchestrated_virtual_machine_scale_sets_plan" {
   description = "Map of plan values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.plan if v.plan != null && length(v.plan) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.plan) if v.plan != null && length(v.plan) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_platform_fault_domain_count" {
   description = "Map of platform_fault_domain_count values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -98,7 +98,7 @@ output "orchestrated_virtual_machine_scale_sets_priority" {
 }
 output "orchestrated_virtual_machine_scale_sets_priority_mix" {
   description = "Map of priority_mix values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.priority_mix if v.priority_mix != null && length(v.priority_mix) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.priority_mix) if v.priority_mix != null && length(v.priority_mix) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_proximity_placement_group_id" {
   description = "Map of proximity_placement_group_id values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -110,7 +110,7 @@ output "orchestrated_virtual_machine_scale_sets_resource_group_name" {
 }
 output "orchestrated_virtual_machine_scale_sets_rolling_upgrade_policy" {
   description = "Map of rolling_upgrade_policy values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.rolling_upgrade_policy if v.rolling_upgrade_policy != null && length(v.rolling_upgrade_policy) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.rolling_upgrade_policy) if v.rolling_upgrade_policy != null && length(v.rolling_upgrade_policy) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_single_placement_group" {
   description = "Map of single_placement_group values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -122,7 +122,7 @@ output "orchestrated_virtual_machine_scale_sets_sku_name" {
 }
 output "orchestrated_virtual_machine_scale_sets_sku_profile" {
   description = "Map of sku_profile values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.sku_profile if v.sku_profile != null && length(v.sku_profile) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.sku_profile) if v.sku_profile != null && length(v.sku_profile) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_source_image_id" {
   description = "Map of source_image_id values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -130,7 +130,7 @@ output "orchestrated_virtual_machine_scale_sets_source_image_id" {
 }
 output "orchestrated_virtual_machine_scale_sets_source_image_reference" {
   description = "Map of source_image_reference values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.source_image_reference if v.source_image_reference != null && length(v.source_image_reference) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.source_image_reference) if v.source_image_reference != null && length(v.source_image_reference) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_tags" {
   description = "Map of tags values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
@@ -138,7 +138,7 @@ output "orchestrated_virtual_machine_scale_sets_tags" {
 }
 output "orchestrated_virtual_machine_scale_sets_termination_notification" {
   description = "Map of termination_notification values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
-  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => v.termination_notification if v.termination_notification != null && length(v.termination_notification) > 0 }
+  value       = { for k, v in azurerm_orchestrated_virtual_machine_scale_set.orchestrated_virtual_machine_scale_sets : k => one(v.termination_notification) if v.termination_notification != null && length(v.termination_notification) > 0 }
 }
 output "orchestrated_virtual_machine_scale_sets_unique_id" {
   description = "Map of unique_id values across all orchestrated_virtual_machine_scale_sets, keyed the same as var.orchestrated_virtual_machine_scale_sets"
